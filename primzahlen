@@ -1,0 +1,48 @@
+#!/bin/bash
+
+max=$1
+
+function primtest {
+  z_prim=$1	# Parameter in Variable speichern
+  PRIM=0		# 0 = Primzahl, wird bei Finden Teiler auf 1 gesetzt
+
+  # Zahlen kleiner gleich 1 sind keine Primzahlen
+  if [ $z_prim -le 1 ]; then PRIM=1; return $PRIM; fi
+  # Die 2 und die 3 sind Primzahlen
+  if [ $z_prim -eq 2 -o $z_prim -eq 3 ]; then return $PRIM; fi
+  # Gerade Zahlen sind keine Primzahlen (außer 2)
+  mod_prim=$(( $z_prim % 2 ))
+  if [ $mod_prim -eq 0 ]; then PRIM=1; return $PRIM; fi
+  # Test Teilbarkeit mit ungeraden Zahlen
+  # imax_prim=$(( $z_prim - 1 ))
+  imax_prim=$(echo "scale=0; sqrt($z_prim)" | bc -l ) # bis Wurzel von Zahl testen
+  for ((i_prim=3; i_prim<=$imax_prim; i_prim+=2))
+    do
+      mod_prim=$(( $z_prim % $i_prim ))
+      if [ $mod_prim -eq 0 ]; then PRIM=1; return $PRIM; fi
+    done
+# kein Teiler gefunden --> Primzahl
+return $PRIM	# 0 = Primzahl, 1 = keine Primzahl
+}
+
+# Alle Zahlen testen
+#for ((i=0; i<=$max; i++))
+#  do
+#    if primtest $i	# Rückgabewert von primetest auswerten
+#      then
+#        echo -n "$i "
+#      fi
+#  done
+
+# nur ungerade Zahlen testen
+echo "2 "
+for ((i=3; i<=$max; i+=2))
+  do
+    if primtest $i      # Rückgabewert von primetest auswerten
+      then
+        echo -n "$i "
+      fi
+  done
+
+
+exit 0

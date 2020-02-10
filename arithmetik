@@ -1,0 +1,31 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+  then
+    echo -n "Bitte Zahl a eingeben: "
+    read a
+  else
+    b=$1
+  fi
+# falls nicht als Parameter übergeben, Werte einlesen
+if [ -z "$2" ]; then echo -n "Bitte Operator eingeben: "; read OP; else b=$2; fi
+if [ -z "$3" ]; then echo -n "Bitte Zahl b eingeben: "; read b; else b=$3; fi
+
+# RESULT=`expr $a "$OP" $b`
+# RESULT=$(expr $a "$OP" $b)
+
+# nur bash
+# let RESULT=( $a $OP $b )
+# let "RESULT=( $a $OP $b )"
+# RESULT=$(($a $OP $b))	# bevorzugt bash
+# RESULT=$((a $OP b))	# Variablen müssen hier nicht dereferenziert werden
+# RESULT=$((a OP b))	# funktioniert nicht, Operator muss dereferenziert werden
+
+# Gleitkomma
+# RESULT=$(echo "scale=4; $a $OP $b" | bc -l)
+# Deutsches Dezimaltrennzeichen
+RESULT=$(echo "scale=4; $a $OP $b" | bc -l | tr "." ",")
+
+echo "$a $OP $b = $RESULT"
+
+exit 0

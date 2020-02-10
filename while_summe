@@ -1,0 +1,14 @@
+#!/bin/bash
+
+SUM=0
+n=1
+
+while [ $n -le $1 ]
+  do
+    SUM=$(( $SUM + $n ))
+    n=$(( $n + 1 ))
+  done
+
+echo "Die Summe aller Zahlen von 1 bis $N = $SUM"
+
+exit 0

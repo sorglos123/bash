@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for ((i=1;i<=60;i+=10))
+  do
+    echo "Sekunden seit 1.1.1970: $(date +%s)";
+    sleep 10
+  done
+
+exit 0

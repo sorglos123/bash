@@ -1,0 +1,10 @@
+#!/bin/bash
+
+i=1
+for ARG
+  do
+    echo "Parameter $i: $ARG"
+    i=$((i + 1))
+  done
+
+exit 0

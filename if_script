@@ -1,0 +1,19 @@
+#!/bin/bash
+
+EXIT_VAR=0
+DIR=$1
+
+if [ -d $DIR ]
+  then
+    echo "Verzeichnis existiert bereits!"
+  else
+    if mkdir $DIR  1> /dev/null 2>&1  # if reagiert jetzt auf den Exitstatus von mkdir
+      then
+        echo "Verzeichnis wurde erfolgreich angelegt."
+      else
+        echo "Fehler beim Anlegen des Verzeichnisses!"
+        EXIT_VAR=1  # Fehler für exit setzen
+      fi
+  fi
+
+exit $EXIT_VAR

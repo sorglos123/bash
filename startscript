@@ -1,0 +1,67 @@
+#!/bin/bash
+SERVICE="xterm"
+PID_FILE="xterm.pid"
+SERVICE_USER=$USER	# damit wird der Name des ausführenden Users gesetzt
+
+# Mögliche Zustände eines Service:
+# 0 running: PID im File gleich PID laufender Prozess
+# 1 stopped: kein PID-File, kein laufender Prozess
+# 2 dead:    PID im File, kein laufender Prozess
+# Funktion für Bestimmung des Zustandes
+# Hinweis: echo $! --> PID des zuletzt gestarteten Prozesses
+function status {
+  STAT_SERVICE=2
+  if [ -s $PID_FILE ]	# -s --> File vorhanden und nicht leer
+    then	# PID File mit PID vorhanden
+      STAT_PID_FILE=$( cat $PID_FILE )
+      STAT_PID_RUNNING=$( ps -u $SERVICE_USER | grep xterm | awk '{print $1}'  )
+      # echo "PID : $STAT_PID_RUNNING"
+      if [ "$STAT_PID_FILE" = "$STAT_PID_RUNNING" ] 	# falls STAT_PID_RUNNING leer ist: --> Vergleich der Zeichenketten
+        then						# = --> Vergleich Zeichenketten, -eq --> Vergleich der Zahlen
+          STAT_SERVICE=0
+        fi  # wenn nicht gleich: Service ist "dead" --> gesetzter Standard für STAT_SERVICE
+    else	# keine PID im File / kein PID File
+      STAT_SERVICE=1
+    fi
+return $STAT_SERVICE
+}
+
+# start: nur wenn stopped oder dead
+# stop:  nur wenn started oder dead
+case $1 in
+  start) echo "Service $SERVICE starten..."
+	 status
+	 if [ $? != 0 ]
+           then
+             $SERVICE &			# Service starten
+	     echo "$!" > $PID_FILE	# PID im File speichern
+             echo "Sevice $SERVICE wurde gestartet."
+           else
+	     echo "Sevice $SERVICE läuft bereits."
+           fi
+	;;
+  stop) echo "Service $SERVICE anhalten..."
+	  status
+	  if [ ! $? = 1 ]	# nur wenn running oder dead
+            then
+              kill -TERM $STAT_PID_RUNNING 1>/dev/null 2>&1	# die Funktion Status setzt die Variable global
+	      rm $PID_FILE
+	      echo "Sevice $SERVICE was stopped."
+            else
+              echo "Sevice $SERVICE is not running."
+            fi
+        ;;
+  status) echo "Status von Service $SERVICE ermitteln..."
+	  status
+	  case $(echo $?) in	# mit $? wird der Rückgabewert des letzten Befehls abgerufen
+	    0) echo "Service $SERVICE is running" ;;
+	    1) echo "Service $SERVICE is stopped" ;;
+	    2) echo "Service $SERVICE is dead" ;;
+	    *) echo "Der Status von Service $SERVICE ist nicht bestimmbar." ;;
+            esac
+        ;;
+  *) 	echo "Usage: $SERVICE { start | stop | status }"
+        ;;
+  esac
+
+exit 0

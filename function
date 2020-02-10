@@ -1,0 +1,15 @@
+#!/bin/bash
+
+a=$1
+
+function QUADRAT {
+  X_SQR=$(( $1 * $1 ))
+  return $X_SQR
+}
+QUADRAT $a 				# Funktion mit Parameter aufrufen
+echo "Das Quadrat von $a ist: $?" 	# Ergebnis steht im Rückgabewert der Funktion
+					# Achtung: Variablen sind nicht gekapselt!
+# via Rückgabewert nur von 0 - 255 möglich
+echo "Das Quadrat aus der globalen Variablen: $X_SQR"
+
+exit 0
